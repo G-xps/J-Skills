@@ -1,4 +1,4 @@
-﻿# Multi-Module Structure Reference
+# Multi-Module Structure Reference
 
 ## Module List
 

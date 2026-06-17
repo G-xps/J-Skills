@@ -1,4 +1,4 @@
-﻿# Maven POM Rules
+# Maven POM Rules
 
 ## Naming Rules
 

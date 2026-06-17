@@ -1,4 +1,4 @@
-﻿---
+---
 name: java-project-init
 description: Initialize an empty or almost-empty Java repository as a strict Spring Boot Maven multi-module project with MyBatis-Plus, PostgreSQL, Flyway, and a single xxx-web startup module; not for routine feature work, style cleanup, bug fixes, or minor edits in an established project.
 ---

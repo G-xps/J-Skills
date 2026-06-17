@@ -1,6 +1,6 @@
 ---
 name: java-style-guide
-description: Lightweight English Java source and test code style review skill. Use after Java files are modified to review naming, formatting, Javadoc and inline comments, file organization, member order, Stream readability, Null-handling readability, exception and log text readability, and lightweight code smells; by default only reviews files changed in the current task. Does not handle project initialization, coding guidance, business logic correctness, architecture, security, performance, concurrency correctness, database design, compilation, or test-result judgment.
+description: Lightweight Java source and test code style review skill using Chinese comments. Use after Java files are modified to review naming, formatting, Javadoc and inline comments, file organization, member order, Stream readability, Null-handling readability, exception and log text readability, and lightweight code smells; by default only reviews files changed in the current task. Does not handle project initialization, coding guidance, business logic correctness, architecture, security, performance, concurrency correctness, database design, compilation, or test-result judgment.
 ---
 
 # java-style-guide

@@ -1,9 +1,13 @@
-﻿# 澶氭ā鍧楃粨鏋勫弬鑰?
-## 妯″潡娓呭崟
+# 多模块结构参考
 
-榛樿浣跨敤 Maven 澶氭ā鍧楃粨鏋勩€傛牴鐩綍鍙綔涓虹埗 POM 鍜岃仛鍚堝伐绋嬶紝涓嶇洿鎺ユ斁涓氬姟浠ｇ爜銆?
-妯″潡鍛藉悕浣跨敤 `<artifact-prefix>-<module-role>`銆傝嫢鐢ㄦ埛娌℃湁缁欏嚭椤圭洰缂╁啓锛屽厛浠?artifactId 鎺ㄥ锛涙棤娉曟帹瀵兼椂浣跨敤 `xxx` 浣滀负鍗犱綅鍓嶇紑骞跺湪杈撳嚭涓鏄庨渶瑕佹浛鎹€?
-鏍?`pom.xml` 榛樿鍖呭惈浠ヤ笅妯″潡锛?
+## 模块清单
+
+默认使用 Maven 多模块结构。仓库根目录作为父 POM 和聚合工程，不得包含业务源码。
+
+模块名使用 `<artifact-prefix>-<module-role>`。如果用户没有提供项目前缀，从 `artifactId` 推导；无法推导时使用 `xxx` 作为占位前缀并在输出中说明需要替换。
+
+根 `pom.xml` 默认包含以下模块：
+
 ```xml
 <modules>
     <module>xxx-base-core</module>
@@ -17,31 +21,51 @@
 </modules>
 ```
 
-## 妯″潡鑱岃矗
+## 模块职责
 
-- `xxx-base-core`锛氬熀纭€鏍稿績妯″潡锛屽瓨鏀惧叏灞€寮傚父銆佺粺涓€鍝嶅簲浣?`Result`銆佸熀纭€宸ュ叿绫汇€佸父閲忕瓑銆?- `xxx-common-api`锛氬叕鍏?API 妯″潡锛屽瓨鏀捐法妯″潡鍏变韩 DTO銆佹灇涓俱€丗eign/RPC 鎺ュ彛瀹氫箟绛夛紝鐢ㄤ簬妯″潡闂磋В鑰﹂€氫俊銆?- `xxx-framework`锛氭妧鏈鏋跺眰锛屽皝瑁?Spring Boot Starter銆丄OP 鍒囬潰銆佸畨鍏ㄩ厤缃€佹暟鎹潈闄愮瓑閫氱敤鎶€鏈兘鍔涖€?- `xxx-dao`锛氭暟鎹闂眰锛岄泦涓鐞?Entity/DO銆丮apper 鎺ュ彛鍜?XML 鏂囦欢锛屽睆钄藉簳灞傛暟鎹簱缁嗚妭锛涙寔涔呭寲璁块棶缁熶竴浣跨敤 MyBatis-Plus 鐨?mapper 灞傘€?- `xxx-infra`锛氬熀纭€璁炬柦灞傦紝灏佽 Redis銆丮Q銆丱SS銆佺煭淇°€侀偖浠剁瓑绗笁鏂逛腑闂翠欢瀵规帴銆?- `xxx-module-system`锛氱郴缁熶笟鍔℃ā鍧楋紝鎵胯浇鐢ㄦ埛銆佹潈闄愩€佽鑹层€佽璇佺瓑骞冲彴鍩虹鑳藉姏锛岄噰鐢?Controller -> Service -> dao/infra 鐨勪笁灞傜粨鏋勩€?- `xxx-job`锛氬畾鏃朵换鍔℃ā鍧楋紝绠＄悊 XXL-JOB Handler銆佷换鍔″弬鏁版ā鍨嬪拰浠诲姟缂栨帓閫昏緫锛屼笉鍖呭惈鐙珛鍚姩鍏ュ彛銆?- `xxx-web`锛氬敮涓€鍚姩妯″潡锛屽寘鍚?Spring Boot 鍚姩鍏ュ彛銆丄PI 鑱氬悎灞傚拰 XXL-JOB Executor 閰嶇疆锛屽澶栨毚闇?RESTful 鎺ュ彛骞舵壙杞藉畾鏃朵换鍔℃墽琛屽櫒銆?
-## 妯″潡渚濊禆瑙勫垯
+- `xxx-base-core`：基础核心模块，用于全局异常、统一 `Result`、基础工具类、常量和其他底层共享代码。
+- `xxx-common-api`：公共 API 模块，用于跨模块的 DTO、枚举、Feign/RPC 接口定义和通信契约。
+- `xxx-framework`：技术框架模块，用于 Spring Boot starter、AOP 切面、安全配置、数据权限支持和通用技术能力。
+- `xxx-dao`：数据访问模块，用于 Entity/DO 类、Mapper 接口和 XML 文件。持久化访问必须使用 MyBatis-Plus mapper 层。MyBatis-Plus 配置（如带有 `PaginationInnerInterceptor` 的 `MybatisPlusConfig`）归属于此模块；因此 `xxx-dao` 除了 `mybatis-plus-spring-boot3-starter` 外，还需声明 `mybatis-plus-jsqlparser`。
+- `xxx-infra`：基础设施模块，用于 Redis、MQ、OSS、SMS、邮件等第三方集成。
+- `xxx-module-system`：系统业务模块，用于用户、权限、角色、认证和平台基础能力。使用 Controller -> Service -> dao/infra 分层。
+- `xxx-job`：定时任务模块，用于 XXL-JOB 处理器、任务参数模型和任务编排。不得包含独立启动入口。
+- `xxx-web`：唯一的启动模块。包含 Spring Boot 应用入口、API 聚合层和 XXL-JOB Executor 配置。
 
-- `xxx-base-core` 淇濇寔搴曞眰骞插噣锛屼笉渚濊禆浠讳綍涓氬姟妯″潡鎴栨妧鏈ā鍧椼€?- `xxx-common-api` 鍙緷璧?`xxx-base-core`锛屼笉渚濊禆 `framework`銆乣dao`銆乣infra`銆乣module-*`銆乣job` 鎴?`web`銆?- `xxx-framework` 鍙緷璧?`xxx-base-core`锛屽繀瑕佹椂鍙緷璧?`xxx-common-api`锛涗笉寰椾緷璧?`dao`銆乣infra`銆乣module-*`銆乣job` 鎴?`web`銆?- `xxx-dao` 鍙緷璧?`xxx-base-core`锛屽繀瑕佹椂鍙緷璧?`xxx-common-api`锛涗笉寰椾緷璧?`infra`銆乣framework`銆乣module-*`銆乣job` 鎴?`web`銆?- `xxx-infra` 鍙緷璧?`xxx-base-core`锛屽繀瑕佹椂鍙緷璧?`xxx-common-api`锛涗笉寰椾緷璧?`dao`銆乣framework`銆乣module-*`銆乣job` 鎴?`web`銆?- `xxx-module-system` 鍙緷璧?`xxx-base-core`銆乣xxx-common-api`銆乣xxx-framework`銆乣xxx-dao` 鍜?`xxx-infra`銆?- `xxx-job` 鍙斁浠诲姟澶勭悊浠ｇ爜锛屽彲鎸夐渶渚濊禆 `module-*`銆乣xxx-framework`銆乣xxx-common-api` 鍜?`xxx-base-core`锛屼笉寰椾緷璧?`xxx-web`銆?- `xxx-web` 鏄敮涓€鍚姩妯″潡锛屽彲渚濊禆 `module-*`銆乣xxx-job`銆乣xxx-framework`銆乣xxx-common-api` 鍜?`xxx-base-core`銆?- 鍚姩妯″潡涓嶅緱涓轰簡鏂逛究渚濊禆鎵€鏈夋ā鍧楋紝搴旀寜瀹為檯鍏ュ彛鑱岃矗鏈€灏忎緷璧栥€?- 涓ョ妯″潡闂村惊鐜緷璧栥€?
-## 鐩綍缁撴瀯
+## 模块依赖规则
 
-鍚勫惈浠ｇ爜妯″潡鐨勭敓浜т唬鐮侀粯璁や綅浜庯細
+- `xxx-base-core` 保持在最底层，不得依赖任何业务或技术模块。
+- `xxx-common-api` 可以依赖 `xxx-base-core`；不得依赖 `framework`、`dao`、`infra`、`module-*`、`job` 或 `web`。
+- `xxx-framework` 可以依赖 `xxx-base-core`，可选地依赖 `xxx-common-api`；不得依赖 `dao`、`infra`、`module-*`、`job` 或 `web`。
+- `xxx-dao` 可以依赖 `xxx-base-core`，可选地依赖 `xxx-common-api`；不得依赖 `infra`、`framework`、`module-*`、`job` 或 `web`。
+- `xxx-infra` 可以依赖 `xxx-base-core`，可选地依赖 `xxx-common-api`；不得依赖 `dao`、`framework`、`module-*`、`job` 或 `web`。
+- `xxx-module-system` 可以依赖 `xxx-base-core`、`xxx-common-api`、`xxx-framework`、`xxx-dao` 和 `xxx-infra`。
+- `xxx-job` 只包含任务处理代码。可以依赖所需的 `module-*`、`xxx-framework`、`xxx-common-api` 和 `xxx-base-core`；不得依赖 `xxx-web`。
+- `xxx-web` 是唯一的启动模块。可以依赖 `module-*`、`xxx-job`、`xxx-framework`、`xxx-common-api` 和 `xxx-base-core`。
+- 启动模块必须按入口职责使用最小依赖，不要为了方便依赖所有模块。
+- 禁止循环依赖。
+
+## 目录结构
+
+有代码的模块的源码目录：
 
 ```text
 <module>/src/main/java/<base-package>/
 ```
 
-璧勬簮鏂囦欢榛樿浣嶄簬锛?
+资源目录：
+
 ```text
 <module>/src/main/resources/
 ```
 
-Mapper XML 鏂囦欢榛樿浣嶄簬锛?
+Mapper XML 文件目录：
+
 ```text
 xxx-dao/src/main/resources/mapper/<business-module>/
 ```
 
-Spring Boot 椤圭洰榛樿閲囩敤浠ヤ笅鍖呯粨鏋勶紝鎸夊疄闄呴渶瑕佸垱寤猴紝閬垮厤鐢熸垚绌虹洰褰曞爢鐮岋細
+按需使用以下包目录。不要为了凑齐列表而创建空目录：
 
 ```text
 config/
@@ -56,9 +80,23 @@ common/
 util/
 ```
 
-绾﹀畾锛?
-- 涓诲惎鍔ㄧ被鏀惧湪 `xxx-web` 鐨?base package 鏍圭洰褰曚笅銆?- 琛?璧勬簮鍨嬫湇鍔￠粯璁ら噰鐢?Service 鎺ュ彛 + Impl 瀹炵幇绫绘ā寮忥紝`service/` 鏀炬帴鍙ｏ紝`service/impl/` 鏀惧搴斿疄鐜般€?- 鑱氬悎/缂栨帓鍨嬫湇鍔″彲浠ョ洿鎺ユ斁鍦?`service/` 涓嬶紝闄ら潪瀛樺湪澶氬疄鐜般€佽法妯″潡濂戠害鎴栭渶瑕佺ǔ瀹氫唬鐞嗘墿灞曘€?- `mapper/` 鏄?MyBatis-Plus 鏁版嵁璁块棶鍏ュ彛锛涙病鏈夋寔涔呭寲闇€姹傛椂涓嶈寮鸿鍒涘缓銆?- Mapper 鍛藉悕浣跨敤 `XxxMapper`锛岀户鎵?`BaseMapper<Xxx>`锛涗笉寰楀垱寤?`XxxRepository` 鎴栦娇鐢?Spring Data Repository 妯″紡銆?- 姣忎釜 Mapper 閮藉繀椤荤敓鎴愬悓鍚?XML 鏂囦欢锛屽嵆浣垮綋鍓嶆病鏈夎嚜瀹氫箟 SQL銆?- Mapper XML 鍛藉悕浣跨敤 `XxxMapper.xml`锛屾斁鍦?`xxx-dao/src/main/resources/mapper/<business-module>/` 涓嬨€?- Mapper XML 鐨?`namespace` 蹇呴』绛変簬 Mapper 鎺ュ彛鍏ㄩ檺瀹氬悕銆?- 姣忎釜 Mapper XML 蹇呴』瀹氫箟 `BaseResultMap`锛屾樉寮忕淮鎶よ〃瀛楁鍒板疄浣撳睘鎬х殑鏄犲皠銆?- 绌?Mapper XML 涔熷繀椤讳繚鎸佸悎娉曠粨鏋勫苟鍖呭惈 `BaseResultMap`锛屼笉瑕佺暀涓嬬┖鐨?`<mapper>`銆?- `util/` 鍙斁鏃犵姸鎬併€侀€氱敤涓旈毦浠ュ綊灞炲叿浣撻鍩熺殑宸ュ叿绫汇€?- Flyway 鑴氭湰榛樿鏀惧湪 `xxx-dao/src/main/resources/db/migration/`銆?- 涓嶇敤鐩綍缁撴瀯鎺╃洊鑱岃矗闂锛涘鏉傚垎灞傚垽鏂氦缁欐灦鏋勭被 skill銆?
-Mapper XML 绀轰緥锛?
+规则：
+
+- Spring Boot 应用启动类放在 `xxx-web` 的基础包下。
+- 表/资源 Service 默认使用 Service 接口 + Impl 类模式：`service/` 放接口，`service/impl/` 放实现。
+- 聚合/编排 Service 可以直接放在 `service/` 下，除非需要多实现、跨模块契约或稳定的代理扩展。
+- `mapper/` 是 MyBatis-Plus 数据访问入口。项目没有持久化需求时不要创建。
+- Mapper 名称使用 `XxxMapper`，继承 `BaseMapper<Xxx>`。不要创建 `XxxRepository` 或使用 Spring Data Repository 风格。
+- 每个 Mapper 必须有同名 XML 文件，即使还没有自定义 SQL。
+- Mapper XML 名使用 `XxxMapper.xml`，放在 `xxx-dao/src/main/resources/mapper/<business-module>/` 下。
+- Mapper XML 的 `namespace` 必须等于 Mapper 接口的全限定名。
+- 每个 Mapper XML 必须定义 `BaseResultMap`，为所有表字段显式配置 column-to-property 映射。
+- 保持空的 Mapper XML 文件有效且准备好编写自定义 SQL，包含 `BaseResultMap`；不要留空的 `<mapper>` 体。
+- Flyway 脚本默认放在 `xxx-dao/src/main/resources/db/migration/` 下。
+- 不要用目录结构掩盖职责问题。复杂的分层决策交给架构 skill。
+
+Mapper XML 示例：
+
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper
@@ -79,8 +117,10 @@ Mapper XML 绀轰緥锛?
 </mapper>
 ```
 
-## 鍒濆鍖栦骇鐗?
-鎸夐」鐩渶瑕佸垱寤烘垨琛ュ厖锛?
+## 初始化产物
+
+按需创建或补充：
+
 - `pom.xml`
 - `xxx-base-core/pom.xml`
 - `xxx-common-api/pom.xml`
@@ -90,7 +130,7 @@ Mapper XML 绀轰緥锛?
 - `xxx-module-system/pom.xml`
 - `xxx-job/pom.xml`
 - `xxx-web/pom.xml`
-- 鍚勫惈浠ｇ爜妯″潡鐨?`src/main/java/<base-package>/...`
+- `src/main/java/<base-package>/...`（有源码的模块）
 - `xxx-web/src/main/resources/application.yml`
 - `xxx-web/src/main/resources/application-dev.yml`
 - `xxx-dao/src/main/resources/mapper/<business-module>/XxxMapper.xml`
@@ -98,6 +138,5 @@ Mapper XML 绀轰緥锛?
 - `xxx-base-core/src/main/java/<base-package>/common/Result.java`
 - `xxx-base-core/src/main/java/<base-package>/common/ResultCode.java`
 - `xxx-base-core/src/main/java/<base-package>/exception/BusinessException.java`
-- `xxx-framework` 鎴?`xxx-web` 涓殑 `GlobalExceptionHandler.java`
-- `xxx-web` 鎴?`xxx-framework` 涓殑 `OpenApiConfig.java`
-
+- `GlobalExceptionHandler.java` 放在 `xxx-framework` 或 `xxx-web` 下
+- `OpenApiConfig.java` 放在 `xxx-web` 或 `xxx-framework` 下
