@@ -1,158 +1,81 @@
 ---
 name: java-style-guide
-description: 用于 Java 源码和测试代码的轻量风格收尾。适用于 Java 文件在修改后的命名、排版、注释、文件组织、成员顺序、可读性和轻量代码异味检查；默认只处理本次改动文件。不负责 import 排序、注解顺序、语法、编译、测试、业务逻辑、架构设计、安全、性能或并发判断。
+description: Lightweight English Java source and test code style review skill. Use after Java files are modified to review naming, formatting, Javadoc and inline comments, file organization, member order, Stream readability, Null-handling readability, exception and log text readability, and lightweight code smells; by default only reviews files changed in the current task. Does not handle project initialization, coding guidance, business logic correctness, architecture, security, performance, concurrency correctness, database design, compilation, or test-result judgment.
 ---
 
 # java-style-guide
 
-## 什么时候使用
+## Purpose
 
-在 Java 源码或测试代码修改后，需要做轻量的风格收尾时使用本 skill。本 skill 关注“代码长什么样”和“局部代码如何组织”，属于静态的可读性与结构约束。
+This is a post-coding review skill for lightweight Java source and test code style cleanup. It focuses on whether code is clear, readable, and maintainable. It does not judge business logic, layering architecture, database structure, or concurrency correctness.
 
-适合处理：
+By default, review only Java files changed in the current task. Expand the scope only when the user explicitly asks for a global style review, style unification, or full cleanup.
 
-- Java 源码的命名、排版、空行、注释、文件组织和成员顺序
-- 测试代码的命名、结构和断言排版
-- 本次改动文件中的风格不一致、冗余注释、无意义命名、格式噪音或明显影响阅读的轻量代码异味
+## Boundary With Other Java Skills
 
-默认只检查本次任务改动过的文件。只有用户明确要求“统一风格”“全局清理”“做 style review”时，才扩大检查范围。
+- `java-project-init`: initializes projects, module structure, base dependencies, and the engineering skeleton.
+- `java-coding-standards`: guides implementation-time layered standards and coding decisions.
+- `java-style-guide`: reviews comments, naming, formatting, readability, and lightweight code smells after coding.
 
-## 什么时候不要使用
+If a task includes both implementation and cleanup, first implement with `java-coding-standards`, then use this skill to review changed files.
 
-不要用本 skill 判断：
+## Core Principles
 
-- Java 语法是否正确
-- `properties`、`yaml`、`xml`、`md` 等非 Java 文件的风格
-- 项目是否能编译
-- 测试是否通过
-- 业务逻辑是否正确
-- 架构设计或分层职责是否合理
-- 安全、性能、并发或数据库设计是否存在问题
+- Clarity over cleverness.
+- Prefer the current project's existing style.
+- Style suggestions serve readability; do not pursue mechanical uniformity.
+- Do not make large unrelated changes only for style.
+- Do not change code behavior.
+- Do not present personal preference as a mandatory rule.
+- Prefer maintainability over micro-optimization unless there is clear performance evidence.
 
-这些问题应交给对应的编译、测试、架构、安全、性能或并发类 skill。
+## Workflow
 
-## 核心原则
+1. Identify which Java files were changed in the current task.
+2. Quickly inspect existing style in the same directory or similar file types.
+3. Review and clean up only changed files.
+4. Determine the most relevant review dimensions and read the corresponding reference files as needed.
+5. Prioritize obvious issues that hurt readability.
+6. Avoid large unrelated formatting changes.
+7. Confirm that business semantics were not changed.
 
-- 优先遵循当前项目已有风格。
-- 风格建议应服务于可读性，不追求机械统一。
-- 不为了风格做大范围无关改动。
-- 不改变代码行为。
-- 不把个人偏好包装成强制规则。
-- 对已有格式化工具的项目，优先尊重工具配置。
+## Reference Selection
 
-## 工作流程
+- Comments, Javadoc, TODO/FIXME: read `references/comments.md`.
+- Class, method, variable, and constant names: read `references/naming.md`.
+- File structure, member order, blank lines, line wrapping, formatting: read `references/formatting.md`.
+- Short methods, early returns, intermediate variables, immutability preference, exception and log text readability: read `references/readability.md`.
+- Streams, lambdas, fluent chains, and collection handling: read `references/streams.md`.
+- Null semantics, `@Nullable`, `@NonNull`, and Bean Validation readability: read `references/null-handling.md`.
+- Test naming, given/when/then structure, and assertion formatting: read `references/tests.md`.
 
-1. 先确认本次改动涉及哪些文件。
-2. 快速观察同目录或同类型文件的既有风格。
-3. 只对改动文件做风格收尾。
-4. 优先处理影响阅读的明显问题。
-5. 避免仅为了排版改动大量无关代码。
-6. 修改后确认没有改变业务语义。
+If the user asks only for a general "style review" without a specific focus, read at least:
 
-## 检查清单
+- `references/comments.md`
+- `references/naming.md`
+- `references/formatting.md`
+- `references/readability.md`
 
-- 类名、方法名、变量名、常量名是否清晰。
-- 包名是否小写且符合项目习惯。
-- 每个文件是否只包含一个 `public` 顶级类型。
-- 目录与文件摆放是否符合项目已有结构。
-- 常量、字段、构造函数、公开方法、受保护方法、私有方法的排列是否易读。
-- 空行是否帮助分组，而不是制造噪音。
-- 链式调用、builder、lambda、Stream 是否换行清楚。
-- 注释是否解释意图，而不是重复代码。
-- `TODO`、`FIXME` 是否包含必要上下文。
-- 参数列表是否过长，是否需要建议提取参数对象、DTO、Builder 或配置对象。
-- 嵌套是否过深，是否可以用早期返回、守卫子句或命名中间变量改善阅读。
-- 魔术数字或魔术字符串是否应提取为命名常量。
-- 是否存在明显的静态可变状态异味。
-- 日志文本、异常文本是否清晰，但不在本 skill 中判断日志或异常策略是否正确。
-- 测试方法名、given/when/then 分段和断言排版是否容易阅读。
+## Quick Checklist
 
-## 常见风格约定
+- Are names clear, or are there weak semantic names?
+- Are important class or method Javadocs missing?
+- Do inline comments explain purpose, reason, or constraints instead of repeating code?
+- Do member order and blank lines help reading?
+- Are Stream, lambda, or fluent chains too complex?
+- Are parameter lists too long or nesting too deep?
+- Should magic numbers or magic strings become named constants?
+- Is there static mutable state, silent catch, or vague exception/log text?
+- Are Null semantics clear?
+- Is test code easy to read in terms of scenario, action, and assertion?
 
-### 命名
+## Output Requirements
 
-- 类、Record 使用 PascalCase，例如 `MarketService`、`Money`。
-- 方法和字段使用 camelCase，例如 `findBySlug`、`marketRepository`。
-- 常量使用 UPPER_SNAKE_CASE，例如 `MAX_PAGE_SIZE`。
-- 布尔字段名避免使用 `is` 前缀，优先使用 `enabled`、`valid`、`expired`。
-- 避免 `data`、`info`、`tmp`、`result` 这类缺少语义的名字，除非上下文已经足够清楚。
+When this skill is used to modify code, report:
 
-### 注释
+- Which files were checked.
+- Which reference documents were read.
+- Which style adjustments were made.
+- Whether any broad formatting was intentionally avoided.
 
-- 优先让代码自解释。
-- 注释应解释原因、约束、取舍或非显而易见的上下文。
-- 不写“给变量赋值”“调用方法”这类重复代码的注释。
-- 公共 API、复杂规则和容易误用的扩展点应写 Javadoc。
-- Javadoc 中存在参数、返回值或异常语义时，应补充 `@param`、`@return`、`@throws`。
-- 简单 getter、setter、私有辅助方法和显而易见的方法不强制写 Javadoc。
-- `TODO` 表示待办事项，应写清后续动作或关联事项；`FIXME` 表示已知缺陷，应写清风险或修复方向。
-
-### 项目结构与布局
-
-- 目录命名优先遵循项目已有结构，例如 `config/`、`controller/`、`service/`、`mapper/`、`domain/`、`dto/`、`util/`。
-- 本 skill 只检查目录命名和文件摆放是否符合既有风格，不判断分层设计是否合理。
-- 每个文件默认只包含一个 `public` 顶级类型。
-- 类内部成员默认按常量、字段、构造函数、公开方法、受保护方法、私有方法排列。
-- 缩进使用 2 个或 4 个空格，以项目已有标准为准。
-
-### 排版
-
-- 一个方法内部应避免过长的连续代码块。
-- 相关语句可以靠近，不相关逻辑用空行分组。
-- 链式调用较长时按调用步骤换行。
-- lambda 和 Stream 表达式过长时应拆分或命名中间结果。
-
-### 轻量代码异味（Code Smell）
-
-- 参数列表过长时，建议提取参数对象、DTO、Builder 或配置对象，具体选择由语义决定。
-- 嵌套过深时，优先考虑早期返回、守卫子句、命名中间变量或提取私有方法。
-- 魔术数字和魔术字符串应提取为命名常量，除非含义在局部上下文中非常明确。
-- 静态可变状态视为明显异味；本 skill 只做可读性和组织层面的提醒，线程安全判断交给并发类 skill。
-- 方法应短小且专注；复杂逻辑优先拆出有业务含义的私有方法，而不是机械拆分。
-
-## 示例
-
-不推荐：
-
-```java
-public List<User> get(List<User> data){
-    return data.stream().filter(x -> x.getStatus().equals("ACTIVE")).collect(Collectors.toList());
-}
-```
-
-更推荐：
-
-```java
-public List<User> findActiveUsers(List<User> users) {
-    return users.stream()
-            .filter(user -> "ACTIVE".equals(user.getStatus()))
-            .collect(Collectors.toList());
-}
-```
-
-不推荐：
-
-```java
-// 判断用户是否过期
-if (user.isExpired()) {
-    return false;
-}
-```
-
-更推荐：
-
-```java
-if (user.isExpired()) {
-    return false;
-}
-```
-
-## 输出要求
-
-当本 skill 用于修改代码时，应说明：
-
-- 检查了哪些文件
-- 做了哪些风格调整
-- 是否刻意避免了某些大范围格式化
-
-当本 skill 用于 review 时，应优先指出影响可读性的具体问题，并给出可执行的修改建议。
+When this skill is used for review, prioritize concrete readability issues and provide actionable suggestions.

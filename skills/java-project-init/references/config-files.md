@@ -32,6 +32,7 @@ It may contain:
 - datasource placeholder configuration
 - MyBatis-Plus base configuration
 - Flyway base configuration
+- SpringDoc OpenAPI base configuration
 - XXL-JOB Executor base configuration
 
 Do not include:
@@ -57,3 +58,22 @@ mybatis-plus:
 ```
 
 Use this location together with `xxx-dao/src/main/resources/mapper/<business-module>/XxxMapper.xml`.
+
+## SpringDoc OpenAPI
+
+Keep SpringDoc configuration in the `dev` profile by default. Do not expose API documentation in production by default.
+
+```yaml
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui/index.html
+```
+
+Default URLs:
+
+- Swagger UI: `/swagger-ui/index.html`
+- JSON docs: `/v3/api-docs`
+- YAML docs: `/v3/api-docs.yaml`

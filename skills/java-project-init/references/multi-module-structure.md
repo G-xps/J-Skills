@@ -1,4 +1,4 @@
-# Multi-Module Structure Reference
+﻿# Multi-Module Structure Reference
 
 ## Module List
 
@@ -26,7 +26,7 @@ The root `pom.xml` contains these modules by default:
 - `xxx-base-core`: base core module for global exceptions, unified `Result`, base utilities, constants, and other low-level shared code.
 - `xxx-common-api`: shared API module for cross-module DTOs, enums, Feign/RPC interface definitions, and communication contracts.
 - `xxx-framework`: technical framework module for Spring Boot starters, AOP aspects, security configuration, data permission support, and common technical capabilities.
-- `xxx-dao`: data access module for Entity/DO classes, Mapper interfaces, and XML files. Persistence access must use the MyBatis-Plus mapper layer.
+- `xxx-dao`: data access module for Entity/DO classes, Mapper interfaces, and XML files. Persistence access must use the MyBatis-Plus mapper layer. MyBatis-Plus configuration (e.g., `MybatisPlusConfig` with `PaginationInnerInterceptor`) belongs in this module; therefore, `xxx-dao` must declare `mybatis-plus-jsqlparser` in addition to `mybatis-plus-spring-boot3-starter`.
 - `xxx-infra`: infrastructure module for Redis, MQ, OSS, SMS, email, and other third-party integrations.
 - `xxx-module-system`: system business module for users, permissions, roles, authentication, and platform base capabilities. Use Controller -> Service -> dao/infra layering.
 - `xxx-job`: scheduled task module for XXL-JOB handlers, task parameter models, and task orchestration. It must not contain an independent startup entrypoint.
@@ -135,3 +135,9 @@ Create or supplement as needed:
 - `xxx-web/src/main/resources/application-dev.yml`
 - `xxx-dao/src/main/resources/mapper/<business-module>/XxxMapper.xml`
 - `xxx-dao/src/main/resources/db/migration/`
+- `xxx-base-core/src/main/java/<base-package>/common/Result.java`
+- `xxx-base-core/src/main/java/<base-package>/common/ResultCode.java`
+- `xxx-base-core/src/main/java/<base-package>/exception/BusinessException.java`
+- `GlobalExceptionHandler.java` under `xxx-framework` or `xxx-web`
+- `OpenApiConfig.java` under `xxx-web` or `xxx-framework`
+

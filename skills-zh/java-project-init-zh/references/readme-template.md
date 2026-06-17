@@ -16,6 +16,8 @@
 - MyBatis-Plus 3.5.12
 - PostgreSQL 42.2.25
 - Flyway
+- SpringDoc OpenAPI 2.8.x
+- Lombok 1.18.x
 
 ## 模块说明
 
@@ -47,6 +49,18 @@ mvn package
 - `application-dev.yml` 放本地启动最小配置。
 - 敏感配置不应写入仓库。
 
+## API 文档
+
+说明开发环境接口文档访问地址：
+
+```text
+Swagger UI: http://localhost:<port>/swagger-ui/index.html
+OpenAPI JSON: http://localhost:<port>/v3/api-docs
+OpenAPI YAML: http://localhost:<port>/v3/api-docs.yaml
+```
+
+说明接口文档仅在 `dev`、`test` 等非生产环境开启，生产环境不得默认暴露。
+
 ## Flyway 迁移
 
 说明迁移目录：
@@ -60,4 +74,3 @@ xxx-dao/src/main/resources/db/migration/
 ```text
 V版本号__描述.sql
 ```
-

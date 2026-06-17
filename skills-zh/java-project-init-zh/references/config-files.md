@@ -32,6 +32,7 @@ spring:
 - 数据源占位配置
 - MyBatis-Plus 基础配置
 - Flyway 基础配置
+- SpringDoc OpenAPI 基础配置
 - XXL-JOB Executor 基础配置
 
 不要包含：
@@ -57,3 +58,22 @@ mybatis-plus:
 ```
 
 该配置与 `xxx-dao/src/main/resources/mapper/<business-module>/XxxMapper.xml` 配套使用。
+
+## SpringDoc OpenAPI
+
+默认只在 `dev` profile 中保留 SpringDoc 配置。生产环境不要默认开启接口文档。
+
+```yaml
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui/index.html
+```
+
+默认访问地址：
+
+- Swagger UI：`/swagger-ui/index.html`
+- JSON 文档：`/v3/api-docs`
+- YAML 文档：`/v3/api-docs.yaml`

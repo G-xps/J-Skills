@@ -16,6 +16,8 @@ List the default stack:
 - MyBatis-Plus 3.5.12
 - PostgreSQL 42.2.25
 - Flyway
+- SpringDoc OpenAPI 2.8.x
+- Lombok 1.18.x
 
 ## Modules
 
@@ -46,6 +48,18 @@ Explain:
 - `application.yml` only activates the `dev` profile.
 - `application-dev.yml` contains minimal local startup configuration.
 - Sensitive configuration must not be committed.
+
+## API Documentation
+
+Document the development API documentation URLs:
+
+```text
+Swagger UI: http://localhost:<port>/swagger-ui/index.html
+OpenAPI JSON: http://localhost:<port>/v3/api-docs
+OpenAPI YAML: http://localhost:<port>/v3/api-docs.yaml
+```
+
+State that API documentation is enabled only in non-production environments such as `dev` and `test`, and must not be exposed by default in production.
 
 ## Flyway Migration
 

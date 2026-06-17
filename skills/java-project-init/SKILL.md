@@ -1,4 +1,4 @@
----
+﻿---
 name: java-project-init
 description: Initialize an empty or almost-empty Java repository as a strict Spring Boot Maven multi-module project with MyBatis-Plus, PostgreSQL, Flyway, and a single xxx-web startup module; not for routine feature work, style cleanup, bug fixes, or minor edits in an established project.
 ---
@@ -18,8 +18,11 @@ Default stack:
 - Maven 3.13.0
 - Maven multi-module
 - MyBatis-Plus 3.5.12
+- MyBatis-Plus 3.5.12+ moved `PaginationInnerInterceptor` into a separate `mybatis-plus-jsqlparser` artifact. The root POM's `dependencyManagement` must include this dependency, and `xxx-dao` must declare it explicitly in `<dependencies>`.
 - PostgreSQL 42.2.25
 - Flyway
+- SpringDoc OpenAPI 2.8.x
+- Lombok 1.18.x
 
 ## Hard Constraints
 
@@ -29,8 +32,11 @@ After this skill triggers, follow these constraints:
 - Use the MyBatis-Plus mapper layer. Do not use JPA, Hibernate Repository, or Spring Data Repository.
 - Use PostgreSQL as the default database driver. Do not switch to H2 for demo convenience.
 - Use Flyway for database migration directories. Do not place migration scripts in a single-module root resources directory.
+- Use SpringDoc OpenAPI 2.x for API documentation. Do not introduce SpringFox in Spring Boot 3.x projects.
+- Manage the Lombok version in the parent POM and add Lombok with `provided` scope only in modules that need Lombok annotations.
+- Initialize a unified `Result<T>` response wrapper, `ResultCode` enum, business exception, and global exception handler skeleton.
 - Create only `xxx-web` as the Spring Boot startup module. Do not add an independent startup class to `xxx-job`.
-- Read `references/multi-module-structure.md`, `references/maven-pom-rules.md`, `references/config-files.md`, `references/readme-template.md`, and `references/gitignore-rules.md` before creating the project skeleton.
+- Read `references/multi-module-structure.md`, `references/maven-pom-rules.md`, `references/config-files.md`, `references/api-docs-and-response.md`, `references/readme-template.md`, and `references/gitignore-rules.md` before creating the project skeleton.
 - If the user asks for business functionality in an empty project, first create a compliant skeleton with this skill, then implement the functionality inside that skeleton. Do not choose another stack for speed.
 
 ## When To Use
@@ -58,9 +64,10 @@ Do not use when:
 4. Read `references/multi-module-structure.md` and create the skeleton according to the module structure, module responsibilities, dependency rules, and directory layout.
 5. Read `references/maven-pom-rules.md` and configure the root POM, module POMs, dependency management, and plugin management.
 6. Read `references/config-files.md` and create `application.yml` plus `application-dev.yml`.
-7. Read `references/readme-template.md` and `references/gitignore-rules.md`, then add README, `.gitignore`, and required run instructions.
-8. Verify that the project has clear build and startup paths.
-9. After initialization, optionally use `java-style-guide` for light cleanup of newly added Java source code.
+7. Read `references/api-docs-and-response.md` and create SpringDoc OpenAPI configuration, unified response wrapper, result code enum, business exception, and global exception handler skeleton.
+8. Read `references/readme-template.md` and `references/gitignore-rules.md`, then add README, `.gitignore`, and required run instructions.
+9. Verify that the project has clear build and startup paths.
+10. After initialization, optionally use `java-style-guide` for light cleanup of newly added Java source code.
 
 ## References
 
@@ -69,6 +76,7 @@ Read the relevant reference files for the initialization work:
 - `references/multi-module-structure.md`: Maven module list, module responsibilities, dependency rules, directory layout, and initialization artifacts.
 - `references/maven-pom-rules.md`: root POM, module POMs, naming rules, dependency management, and plugin management.
 - `references/config-files.md`: `application.yml`, `application-dev.yml`, sensitive config, and minimal startup config.
+- `references/api-docs-and-response.md`: SpringDoc OpenAPI, unified response wrapper, result code enum, business exception, and global exception handling.
 - `references/readme-template.md`: required README sections and startup instructions.
 - `references/gitignore-rules.md`: ignore rules for Java, Maven, IDEs, logs, and local environment files.
 
@@ -81,6 +89,9 @@ Do not duplicate detailed reference rules in this `SKILL.md`.
 - Each module `pom.xml` declares only dependencies required by that module. Do not put every dependency in every module.
 - Keep dependencies minimal. Add only dependencies required for project startup.
 - Add `spring-boot-starter-web` when Web capability is needed. Do not add it when the project has no Web requirement.
+- Add `springdoc-openapi-starter-webmvc-ui` to `xxx-web` by default, with the version managed by the parent POM property `springdoc-openapi.version`. Use `springdoc-openapi-starter-webflux-ui` only for WebFlux projects.
+- Do not introduce `springfox-swagger2`, `springfox-boot-starter`, or any other SpringFox dependency.
+- Use Lombok only as a compile-time dependency. Its scope must be `provided`; it must not be packaged into runtime artifacts.
 - Put XXL-JOB executor configuration in `xxx-web`; `xxx-web` starts it together with the Web service. `xxx-job` only provides task handling code.
 - Add data access starter/driver dependencies only when data access is needed.
 - When PostgreSQL is used, add Flyway-related dependencies and prefer Spring Boot managed versions.
@@ -120,6 +131,8 @@ Also add as needed:
 
 - `.gitignore`
 - `README.md`
+- SpringDoc OpenAPI configuration class
+- Unified response wrapper, result code enum, business exception, and global exception handler
 - Maven Wrapper, or explain why it was not added
 
 Do not create:
@@ -145,7 +158,12 @@ When using this skill, report:
 - The chosen Java, Spring Boot, and Maven conventions.
 - Which Maven modules and project skeleton were created or adjusted.
 - Which base dependencies were added.
+- Whether SpringDoc OpenAPI was added, including Swagger UI, JSON, and YAML documentation URLs.
+- Whether Lombok version management was added and which modules use Lombok.
+- Whether the unified response wrapper, result code enum, business exception, and global exception handler skeleton were created.
 - Whether Flyway was enabled, including migration directory and naming convention.
 - How to run the build command and how to start the single `xxx-web` service.
 - Whether Maven Wrapper was added; if not, explain why.
 - What was intentionally deferred, such as database design, security, cache, CI, or code formatting tools.
+
+
